@@ -33,6 +33,9 @@ class Product
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[ORM\Column]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->createdDate = new \DateTime();
@@ -110,5 +113,17 @@ class Product
             unlink(__DIR__.'/../../public/uploads/' . $this->image);
         }
         return;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): static
+    {
+        $this->price = $price;
+
+        return $this;
     }
 }

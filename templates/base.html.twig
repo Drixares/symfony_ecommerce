@@ -11,13 +11,6 @@
 		{% endblock %}
 
 		{{ encore_entry_link_tags('app') }}
-
-		{% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-			{% block importmap %}
-				{{ importmap('app') }}
-			{% endblock %}
-		{% endblock %}
 	</head>
 	<body>
 		{# <header>
@@ -53,7 +46,11 @@
 				</p>
 			{% endfor %}
 		{% endfor %}
+
 		{% block body %}{% endblock %}
 
+		{% block javascripts %}
+			<script src="{{ asset('js/app.js') }}"></script>
+		{% endblock %}
 	</body>
 </html>
