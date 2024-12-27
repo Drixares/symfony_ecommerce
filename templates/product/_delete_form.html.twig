@@ -1,0 +1,9 @@
+<form action="{{ path('app_product_delete', {id: product.id}) }}" method="POST">
+    <input type="hidden" name="csrf" value="{{ csrf_token('delete' ~ product.id) }}">
+    <button
+            type="submit"
+            class="px-3 py-2 rounded-lg text-slate-50 bg-rose-500/75 hover:bg-rose-500 transition-colors
+                        inline-flex items-center">
+        Delete product
+    </button>
+</form>

@@ -1,0 +1,37 @@
+<div>
+    <button
+            id="addProductButton"
+            class="bg-slate-950 hover:bg-slate-800 text-slate-50 py-3 px-4 rounded-lg
+        					outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors"
+    >
+        Add a product
+    </button>
+</div>
+<div
+    id="addProductPopup"
+    class="hidden fixed inset-0 bg-black/50 flex justify-center
+    items-center z-50"
+>
+    <div class="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md">
+        <button
+            id="closePopupButton"
+            class="absolute top-4 right-4 text-2xl font-bold text-gray-600 cursor-pointer hover:text-red-500
+            transition-colors"
+        >
+            &times;
+        </button>
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">Add a new <product></product></h2>
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.content) }}
+        {{ form_row(form.price) }}
+        {{ form_row(form.stock) }}
+        {{ form_row(form.image) }}
+        {{ form_row(form.save, {
+            'attr': {
+                'class': 'w-full bg-slate-950 text-white py-2 rounded-lg hover:bg-slate-800'
+            }
+        }) }}
+        {{ form_end(form) }}
+    </div>
+</div>

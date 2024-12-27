@@ -20,30 +20,19 @@ class ProductController extends AbstractController
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
 
-            /** @var UploadedFile $imageFile */
-            $imageFile = $form->get('image')->getData();
- 
-            if ($imageFile) {
-                $newFilename = uniqid().'.'.$imageFile->guessExtension();
- 
-                try {
-                    $imageFile->move(
-                        $this->getParameter('upload_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('error', "Impossible d'ajouter l'image");
-                    return $this->redirectToRoute('app_product');
-                }
- 
-                $product->setImage($newFilename);
+        if($form->isSubmitted() && $form->isValid()){
+            // Verify if the user is admin
+            if (!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('ROLE_SUPER_ADMIN')) {
+                $this->addFlash('error', "You don't have permission to edit this product.");
+                return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
             }
+
+            $this->handleImageUpload($form, $product);
 
             $em->persist($product);
             $em->flush();
-            $this->addFlash('success', 'Produit ajouté');
+            $this->addFlash('success', 'Product added successfully!');
             return $this->redirectToRoute('app_product');
         }
 
@@ -51,28 +40,52 @@ class ProductController extends AbstractController
 
         return $this->render('product/index.html.twig', [
             'products' => $products,
-            'ajout_produit' => $form
+            'form' => $form
         ]);
     }
 
     #[Route('/product/{id}', name: 'app_product_show')]
-    public function show(Product $product = null): Response
+    public function show(Product $product = null, EntityManagerInterface $em, Request $request): Response
     {
         if($product == null){
-            $this->addFlash('error', 'Produit introuvable');
+            $this->addFlash('error', 'Product not found');
             return $this->redirectToRoute('app_product');
         };
 
+        // Create the edit form, bound to the product entity
+        $editForm = $this->createForm(ProductType::class, $product);
+
+        // Handle form submission in the same request
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            // Verify if the user is admin
+            if (!$this->isGranted('ROLE_ADMIN') and !$this->isGranted('ROLE_SUPER_ADMIN')) {
+                $this->addFlash('error', "You don't have permission to edit this product.");
+                return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
+            }
+
+            if (!$this->handleImageUpload($editForm, $product)) {
+                return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
+            }
+
+            $em->flush(); // Save changes to the database
+            $this->addFlash('success', 'Product updated successfully!');
+
+            return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
+        }
+
         return $this->render('product/show.html.twig', [
             'product' => $product,
+            'edit_form' => $editForm, // Pass the form to the Twig template
         ]);
     }
 
     #[Route('/product/delete/{id}', name: 'app_product_delete')]
-    public function delete(Request $request, EntityManagerInterface $em, Product $product = null)
+    public function delete(Request $request, EntityManagerInterface $em, Product $product = null): Response
     {
         if($product == null){
-            $this->addFlash('error', 'Produit introuvable');
+            $this->addFlash('error', 'Product not found');
             return $this->redirectToRoute('app_product');
         }
 
@@ -80,8 +93,38 @@ class ProductController extends AbstractController
             $em->remove($product);
             $em->flush();
             
-            $this->addFlash('success', 'Produit supprimé');
+            $this->addFlash('success', 'Product deleted');
         }
         return $this->redirectToRoute('app_product');
+    }
+
+    /**
+     * @param $form
+     * @param Product $product
+     * @return bool
+     *
+     * Get image from the form and add it in the upload directory.
+     */
+    private function handleImageUpload($form, Product $product): bool
+    {
+        /** @var UploadedFile|null $imageFile */
+        $imageFile = $form->get('image')->getData();
+
+        if ($imageFile) {
+            $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('upload_directory'),
+                    $newFilename
+                );
+                $product->setImage($newFilename);
+                return true;
+            } catch (FileException $e) {
+                $this->addFlash('error', "Error while uploading the image");
+                return false;
+            }
+        }
+        return true;
     }
 }
