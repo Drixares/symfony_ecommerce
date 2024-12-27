@@ -1,20 +1,85 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register
-{% endblock %}
+{% block title %}Register - Ecommerce{% endblock %}
 
 {% block body %}
-	<h1>Register</h1>
+    <div class="min-h-screen flex flex-col items-center justify-center gap-6 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div class="flex flex-col items-center gap-2">
+                <h1 class="text-3xl text-slate-900">{{ 'Welcome !' | trans }}</h1>
+				<p class="text-slate-600">{{ 'Create an account' | trans }}</p>
+            </div>
 
-	{{ form_errors(registrationForm) }}
+            {{ form_start(registrationForm, {'attr': {'class': 'mt-8 space-y-6'}}) }}
+            {% if form_errors(registrationForm) %}
+                <div class="text-sm text-red-600 text-center">
+                    {{ form_errors(registrationForm) }}
+                </div>
+            {% endif %}
 
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.email) }}
-	{{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-	{# {{ form_row(registrationForm.agreeTerms) }} #}
+            <div class="space-y-4">
+                {{ form_row(registrationForm.email, {
+                    'attr': {
+                        'class': 'mt-1 block w-full rounded-md border border-slate-300 p-2 focus:ring-slate-500 sm:text-sm transition-colors duration-200'
+                    },
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-slate-600'
+                    }
+                }) }}
 
-	<button type="submit" class="btn">Register</button>
-	{{ form_end(registrationForm) }}
+                {{ form_row(registrationForm.firstName, {
+                    'attr': {
+                        'class': 'mt-1 block w-full rounded-md border border-slate-300 p-2 focus:ring-slate-500 sm:text-sm transition-colors duration-200'
+                    },
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-slate-600'
+                    }
+                }) }}
+
+                {{ form_row(registrationForm.lastName, {
+                    'attr': {
+                        'class': 'mt-1 block w-full rounded-md border border-slate-300 p-2 focus:ring-slate-500 sm:text-sm transition-colors duration-200'
+                    },
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-slate-600'
+                    }
+                }) }}
+
+                {{ form_row(registrationForm.plainPassword, {
+                    'label': 'Mot de passe',
+                    'attr': {
+                        'class': 'mt-1 block w-full rounded-md border border-slate-300 p-2 focus:ring-slate-500 sm:text-sm transition-colors duration-200'
+                    },
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-slate-600'
+                    }
+                }) }}
+
+                <button 
+					type="submit"
+					class="w-full flex justify-center py-2.5 px-4 rounded-md text-slate-50
+					 bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 
+					 focus:ring-slate-500 transition-all duration-200"
+				>
+                   {{ 'Create my account' }}
+                </button>
+            </div>
+            {{ form_end(registrationForm) }}
+        </div>
+		<div class="flex items-center justify-center gap-5 w-full max-w-md">
+			<hr class="w-full border-t border-slate-300">
+			or
+			<hr class="w-full border-t border-slate-300">
+		</div>
+		<div class="flex justify-center w-full max-w-md">
+			<a 
+				href="{{ path('app_login') }}" 
+				class="w-full flex justify-center py-2.5 px-4 rounded-md text-slate-900
+					bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 
+					focus:ring-slate-500 transition-all duration-200"
+			>
+				Login to your account	
+			</a>
+		</div>
+    </div>
 {% endblock %}

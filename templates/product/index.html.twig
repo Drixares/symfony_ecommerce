@@ -1,25 +1,103 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProductController!
-{% endblock %}
+{% block title %}Nos produits - Ecommerce{% endblock %}
 
 {% block body %}
-	<h1>Liste des produits</h1>
-	{% for p in products %}
-		<p>{{p.title}}</p>
-		{% if p.image is not empty %}
-			<img src="{{ asset('uploads/' ~ p.image) }}" style="max-width:100px;">
-		{% endif %}
+	<div class="flex flex-col gap-10 mx-auto max-w-screen-2xl w-full mt-32 px-5">
+		<div class="w-full flex justify-between">
+			<div>
+				<h1 class="text-3xl font-semibold mb-2">
+					Liste des produits
+				</h1>
+				<p class="text-slate-600">
+					{{ products|length }}{{ products|length > 1 ? " produits trouvés" : " produit trouvé" }}
+				</p>
+			</div>
+			{% if is_granted("ROLE_ADMIN") %}
+				<div>
+					<button
+						id="addProductButton"
+						class="bg-slate-950 hover:bg-slate-800 text-slate-50 py-3 px-4 rounded-lg
+						outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors"
+					>
+						Add a product
+					</button>
+				</div>
+				<div
+					id="addProductPopup"
+					class="hidden fixed inset-0 bg-black/50 flex justify-center
+					items-center z-50"
+				>
+					<div class="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md">
+						<button
+							id="closePopupButton"
+							class="absolute top-4 right-4 text-2xl font-bold text-gray-600 cursor-pointer hover:text-red-500
+							 transition-colors"
+						>
+							&times;
+						</button>
+						<h2 class="text-2xl font-semibold mb-4 text-gray-800">Add a new <product></product></h2>
+						{{ form_start(ajout_produit, {'attr': {'class': 'space-y-4'}}) }}
+						{{ form_row(ajout_produit.title, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
+						{{ form_row(ajout_produit.content, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
+						{{ form_row(ajout_produit.image, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
+						{{ form_row(ajout_produit.category, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
+						{{ form_row(ajout_produit.save, {'attr': {'class': 'w-full bg-slate-950 text-white py-2 rounded-lg
+							hover:bg-slate-800'}})
+						}}
+						{{ form_end(ajout_produit) }}
+					</div>
+				</div>
+			{% endif %}
+		</div>
+		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8 w-full">
+			{% for p in products %}
+				<a href="{{ path("app_product_show", {id: p.id}) }}" class="group space-y-2 cursor-pointer relative">
+					<div class="w-full aspect-square overflow-hidden bg-slate-300 rounded-lg">
+						{% if p.image is not empty %}
+							<img
+								src="{{ asset('uploads/' ~ p.image) }}"
+								alt="product image"
+								class="w-full h-full object-cover group-hover:scale-110 transition-transform
+									duration-200"
+							>
+						{% endif %}
+					</div>
+					<p class="text-xl lg:text-2xl font-medium text-slate-950">
+						{{p.title}}
+					</p>
+				</a>
+			{% else %}
+				<p>Aucun produit</p>
+			{% endfor %}
+		</div>
 
-		<form action="{{path('app_product_delete', {id: p.id})}}" method="POST">
-			<input type="hidden" name="csrf" value="{{ csrf_token('delete' ~ p.id) }}">
-			<input type="submit" value="Delete">
-		</form>
+	</div>
 
-		<hr>
-	{% else %}
-		<p>Aucun produit</p>
-	{% endfor %}
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
 
-	<h2>Ajouter un produit</h2>
-	{{form(ajout_produit)}}{% endblock %}
+			// Sélection des éléments nécessaires
+			const addProductButton = document.getElementById('addProductButton');
+			const popup = document.getElementById('addProductPopup');
+			const closePopupButton = document.getElementById('closePopupButton');
+
+			// Fonction pour afficher le pop-up
+			addProductButton.addEventListener('click', () => {
+				popup.classList.remove('hidden');
+			});
+
+			// Fonction pour cacher le pop-up
+			closePopupButton.addEventListener('click', () => {
+				popup.classList.add('hidden');
+			});
+
+			// Fermer le pop-up si on clique en dehors du contenu
+			popup.addEventListener('click', (e) => {
+				if (e.target === popup) {
+					popup.classList.add('hidden');
+				}
+			});
+		})
+	</script>
+{% endblock %}

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ProductController extends AbstractController
 {
-    #[Route('/product', name: 'app_product')]
+    #[Route('/', name: 'app_product')]
     public function index(EntityManagerInterface $em, Request $request): Response
     {
         $product = new Product();
@@ -52,6 +52,19 @@ class ProductController extends AbstractController
         return $this->render('product/index.html.twig', [
             'products' => $products,
             'ajout_produit' => $form
+        ]);
+    }
+
+    #[Route('/product/{id}', name: 'app_product_show')]
+    public function show(Product $product = null): Response
+    {
+        if($product == null){
+            $this->addFlash('error', 'Produit introuvable');
+            return $this->redirectToRoute('app_product');
+        };
+
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
         ]);
     }
 

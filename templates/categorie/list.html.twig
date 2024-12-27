@@ -10,6 +10,7 @@
 	{{ dump(categories) }}
 
 	{% if is_granted('ROLE_ADMIN') %}
+		<p>TU ES ADMINISTRATEUR</p>
 		{% for c in categories %}
 			<p>
 				<a href="{{ path('app_category_show', {id: c.id}) }}">
