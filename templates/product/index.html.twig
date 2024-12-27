@@ -13,41 +13,8 @@
 					{{ products|length }}{{ products|length > 1 ? " produits trouvés" : " produit trouvé" }}
 				</p>
 			</div>
-			{% if is_granted("ROLE_ADMIN") %}
-				<div>
-					<button
-						id="addProductButton"
-						class="bg-slate-950 hover:bg-slate-800 text-slate-50 py-3 px-4 rounded-lg
-						outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors"
-					>
-						Add a product
-					</button>
-				</div>
-				<div
-					id="addProductPopup"
-					class="hidden fixed inset-0 bg-black/50 flex justify-center
-					items-center z-50"
-				>
-					<div class="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md">
-						<button
-							id="closePopupButton"
-							class="absolute top-4 right-4 text-2xl font-bold text-gray-600 cursor-pointer hover:text-red-500
-							 transition-colors"
-						>
-							&times;
-						</button>
-						<h2 class="text-2xl font-semibold mb-4 text-gray-800">Add a new <product></product></h2>
-						{{ form_start(ajout_produit, {'attr': {'class': 'space-y-4'}}) }}
-						{{ form_row(ajout_produit.title, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
-						{{ form_row(ajout_produit.content, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
-						{{ form_row(ajout_produit.image, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
-						{{ form_row(ajout_produit.category, {'attr': {'class': 'w-full border px-4 py-2 rounded-lg'}}) }}
-						{{ form_row(ajout_produit.save, {'attr': {'class': 'w-full bg-slate-950 text-white py-2 rounded-lg
-							hover:bg-slate-800'}})
-						}}
-						{{ form_end(ajout_produit) }}
-					</div>
-				</div>
+			{% if is_granted("ROLE_ADMIN") or is_granted('ROLE_SUPER_ADMIN') %}
+				{% include "./product/_form.html.twig" %}
 			{% endif %}
 		</div>
 		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8 w-full">
@@ -73,4 +40,8 @@
 		</div>
 
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('js/create-product.js') }}"></script>
 {% endblock %}
