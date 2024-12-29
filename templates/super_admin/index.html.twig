@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .tab-button.active {
+            color: #1e293b;
+        }
+        .tab-button:not(.active) {
+            color: #64748b;
+        }
+        .tab-button:not(.active):hover {
+            color: #334155;
+            background-color: #edf2f7;
+        }
+        .tab-content.hidden {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen bg-gray-50">
+        <div class="container mx-auto px-5 py-16">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-5xl font-semibold text-slate-900">Admin Dashboard</h1>
+                <div class="text-sm text-gray-500">
+                    Last updated : {{ "now"|date("d/m/Y H:i") }}
+                </div>
+            </div>
+
+            {# Stats Cards #}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                <div class="w-full p-5 rounded-lg bg-white border border-slate-200">
+                    <div class="text-3xl font-bold mb-2">{{ users|length }}</div>
+                    <div class="text-gray-800">Users</div>
+                </div>
+                <div class="w-full p-5 rounded-lg bg-white border border-slate-200">
+                    <div class="text-3xl font-bold mb-2">{{ carts|length }}</div>
+                    <div class="text-gray-800">Pending carts</div>
+                </div>
+                <div class="w-full p-5 rounded-lg bg-white border border-slate-200">
+                    {% set totalValue = 0 %}
+                    {% for cart in carts %}
+                        {% for content in cart.cartContents %}
+                            {% set totalValue = totalValue + (content.product.price * content.quantity) %}
+                        {% endfor %}
+                    {% endfor %}
+                    <div class="text-3xl font-bold mb-2">{{ totalValue|number_format(2, ',', ' ') }} €</div>
+                    <div class="text-gray-800">Total pending carts value </div>
+                </div>
+            </div>
+
+            {# Tabs Navigation #}
+            <div class="flex space-x-4 mb-6 border-b border-gray-200 pb-2">
+                <button data-tab="users" class="tab-button active px-3 py-2 rounded-lg font-semibold">
+                    Users
+                </button>
+                <button data-tab="carts" class="tab-button px-3 py-2 rounded-lg font-semibold">
+                    Carts
+                </button>
+            </div>
+
+            {# Users Tab Content #}
+            {% include "./super_admin/_users.html.twig" %}
+
+            {# Carts Tab Content #}
+            {% include "./super_admin/_carts.html.twig" %}
+        </div>
+    </div>
+
+    <script>
+
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/admin-tabs.js') }}"></script>
+{% endblock %}
