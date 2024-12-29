@@ -5,7 +5,9 @@
 {% block body %}
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 flex items-center justify-between w-full mb-8">
+            <div class="lg:col-span-2 flex items-center justify-between w-full mb-8
+                {{ items|length == 0 ? "lg:col-span-3" : "" }}"
+            >
                 <div>
                     <h1 class="text-3xl font-semibold text-slate-800">Détails du panier</h1>
                     <p class="text-slate-500 mt-2">Créé le {{ cart.purchaseDate|date('d/m/Y à H:i') }}</p>
@@ -17,17 +19,20 @@
             </div>
         </div>
 
-        {% if cart.getCartContents()|length == 0 %}
+        {% if items|length == 0 %}
             <div class="bg-white rounded-xl shadow-sm p-8 text-center">
                 <div class="text-slate-400 mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                 </div>
-                <p class="text-slate-600 mb-4">{{ 'our-products-empty' | trans }}</p>
+                <p class="text-slate-600 mb-4">You don't have any product in your cart yet.</p>
                 <a href="{{ path('app_product') }}"
-                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200">
-                    {{ 'continue-our-products' | trans }}
+                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm
+                   font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2
+                   focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200"
+                >
+                    Take a look at our products
                 </a>
             </div>
         {% else %}
@@ -36,7 +41,7 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                         <div class="divide-y divide-slate-200">
-                            {% for item in cart.getCartContents() %}
+                            {% for item in items %}
                                 <div class="p-6">
                                     <div class="flex gap-6">
                                         {# Image du produit #}
@@ -133,7 +138,7 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-xl shadow-sm p-6 sticky top-4">
                         <h2 class="text-lg font-semibold text-slate-900 mb-4">
-                            Résumé du panier ({{ cart.getCartContents()|length }})
+                            Résumé du panier ({{ items|length }})
                         </h2>
 
                         <div class="space-y-3">

@@ -5,10 +5,11 @@
 {% block body %}
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 flex items-center justify-between w-full">
+            <div class="lg:col-span-2 flex items-center justify-between w-full {{ items|length == 0 ? "lg:col-span-3" : "" }}">
                 <h1 class="text-3xl font-semibold text-slate-800 mb-8">
                     Cart
                 </h1>
+                {% if items|length > 0 %}
                 <a
                     href="{{ path('app_cart_content') }}"
                     class="bg-slate-100 border border-slate-200 rounded-md text-sm font-medium text-slate-950
@@ -16,30 +17,32 @@
                 >
                     Contenu de la commande
                 </a>
+                {% endif %}
             </div>
 
         </div>
 
-        {% if cart.getCartContents()|length == 0 %}
+        {% if items|length == 0 %}
             <div class="bg-white rounded-xl shadow-sm p-8 text-center">
                 <div class="text-slate-400 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                 </div>
-                <p class="text-slate-600 mb-4">{{ 'our-products-empty' | trans }}</p>
+                <p class="text-slate-600 mb-4">You don't have any product in your cart yet.</p>
                 <a href="{{ path('app_product') }}"
-                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200">
-                    {{ 'continue-our-products' | trans }}
+                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm
+                   font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2
+                   focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200"
+                >
+                    Take a look at our products
                 </a>
             </div>
         {% else %}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {# List of products #}
                 <div class="lg:col-span-2 px-6 divide-y divide-slate-300 bg-white rounded-lg">
-                    {% for item in cart.getCartContents() %}
+                    {% for item in items %}
                         <div class="flex items-center gap-4 w-full py-6">
 {#                            {# PRODUCT IMAGE #}
                             <div class="size-24 shrink-0 bg-slate-200 rounded-lg overflow-hidden">
@@ -129,29 +132,23 @@
                                     </div>
 
                                     {# Delete Button #}
-                                    <form
-                                        method="post"
-                                        action="{{ path('app_cart_remove', {cartContentId: item.id}) }}"
-                                    >
+                                    <form method="post" action="{{ path('app_cart_remove', {cartContentId: item.id}) }}">
                                         <button
                                             type="submit"
-                                            class="inline-flex items-center gap-2 text-slate-700 hover:text-red-600
-                                            transition-colors duration-200 text-sm"
+                                            class="inline-flex items-center gap-2 px-3 py-2 rounded-md
+                                                text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all
+                                                duration-200 text-sm"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                  stroke-linecap="round" stroke-linejoin="round"
-                                                 class="lucide lucide-trash-2"
                                             >
-                                                <path d="M3 6h18"/>
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
                                                 <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
                                                 <line x1="10" x2="10" y1="11" y2="17"/>
                                                 <line x1="14" x2="14" y1="11" y2="17"/>
                                             </svg>
-                                            <span>
-                                                Delete
-                                            </span>
+                                            <span>Delete</span>
                                         </button>
                                     </form>
                                 </div>
@@ -164,7 +161,7 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-xl py-4 px-6 sticky top-4">
                         <h2 class="text-lg font-semibold text-slate-900 mb-4">
-                            Checkout summary ({{ cart.getCartContents()|length }})
+                            Checkout summary ({{ items|length }})
                         </h2>
 
                         <div class="flex justify-between items-center mb-4">
