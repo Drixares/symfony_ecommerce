@@ -1,0 +1,192 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ "my-cart" | trans }}{% endblock %}
+
+{% block body %}
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <h1 class="text-3xl font-semibold text-slate-800 mb-8">
+            Cart
+        </h1>
+
+        {% if cart.getCartContents()|length == 0 %}
+            <div class="bg-white rounded-xl shadow-sm p-8 text-center">
+                <div class="text-slate-400 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                </div>
+                <p class="text-slate-600 mb-4">{{ 'our-products-empty' | trans }}</p>
+                <a href="{{ path('app_product') }}"
+                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200">
+                    {{ 'continue-our-products' | trans }}
+                </a>
+            </div>
+        {% else %}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {# List of products #}
+                <div class="lg:col-span-2 px-6 divide-y divide-slate-300 bg-white rounded-lg">
+                    {% for item in cart.getCartContents() %}
+                        <div class="flex items-center gap-4 w-full py-6">
+{#                            {# PRODUCT IMAGE #}
+                            <div class="size-24 shrink-0 bg-slate-200 rounded-lg overflow-hidden">
+                                {% if item.product.image is not null %}
+                                    <img
+                                        src="/uploads/{{ item.product.image }}?random={{ random() }}"
+                                        alt="{{ item.product.title }} image"
+                                        class="w-full h-full object-cover"
+                                    >
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-slate-400">#}
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="w-full flex flex-col gap-4">
+                                <div class="flex justify-between gap-2">
+                                    <div class="flex flex-col">
+                                        <h3 class="text-lg font-semibold text-slate-600">{{ item.product.title }}</h3>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-slate-500 font-medium">
+                                                {{
+                                                    item.product.price > 0
+                                                    ? item.product.price|number_format(2, ',', ' ') ~ "€"
+                                                    : "Free"
+                                                }}
+                                            </span>
+                                            <span class="w-[1px] h-4 bg-slate-600"></span>
+                                            {% if item.product.stock > 0 %}
+                                                <span class="text-emerald-600">
+                                                   In Stock
+                                                </span>
+                                            {% else %}
+                                                <span class="text-red-600">
+                                                    Out of Stock
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <p class="text-slate-700 text-lg font-semibold">
+                                        {{
+                                            item.product.price * item.quantity > 0
+                                            ? (item.product.price * item.quantity)|number_format(2, ',', ' ') ~ "€"
+                                            : "Free"
+                                        }}
+                                    </p>
+                                </div>
+                                <div class="flex justify-between items-center">
+{#                                  {# Quantity #}
+                                    <div class="inline-flex items-center gap-4 rounded-lg border border-slate-300">
+                                        <form
+                                            method="post"
+                                            action="{{ path('app_cart_decrease', {cartContentId: item.id}) }}"
+                                            class="flex items-center"
+                                        >
+                                            <button
+                                                type="submit"
+                                                name="action"
+                                                value="decrease"
+                                                class="size-8 flex items-center justify-center font-semibold text-lg
+                                                text-slate-600 hover:bg-slate-50"
+                                            >
+                                                &#8722;
+                                            </button>
+                                        </form>
+                                        <span class="text-center">{{ item.quantity }}</span>
+                                        <form
+                                            method="post"
+                                            action="{{ path('app_cart_increase', {cartContentId: item.id}) }}"
+                                            class="flex items-center m-0"
+                                        >
+                                            <button
+                                                type="submit"
+                                                name="action"
+                                                value="increase"
+                                                class="size-8 flex items-center justify-center font-semibold text-lg
+                                                 text-slate-600 hover:bg-slate-50"
+                                            >
+                                                &#43;
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    {# Delete Button #}
+                                    <form
+                                        method="post"
+                                        action="{{ path('app_cart_remove', {cartContentId: item.id}) }}"
+                                    >
+                                        <button
+                                            type="submit"
+                                            class="inline-flex items-center gap-2 text-slate-700 hover:text-red-600
+                                            transition-colors duration-200 text-sm"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="lucide lucide-trash-2"
+                                            >
+                                                <path d="M3 6h18"/>
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                <line x1="10" x2="10" y1="11" y2="17"/>
+                                                <line x1="14" x2="14" y1="11" y2="17"/>
+                                            </svg>
+                                            <span>
+                                                Delete
+                                            </span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Summary #}
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl py-4 px-6 sticky top-4">
+                        <h2 class="text-lg font-semibold text-slate-900 mb-4">
+                            Checkout summary ({{ cart.getCartContents()|length }})
+                        </h2>
+
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-slate-600 text-lg">Total</span>
+                            <span class="text-slate-700 text-xl font-semibold">
+                                {{ cart.getTotal()|number_format(2, ',', ' ') }} €
+                            </span>
+                        </div>
+
+                        <div class="space-y-2">
+                            <form method="post" action="{{ path('app_cart_checkout') }}" class="mt-6">
+                                <button
+                                    type="submit"
+                                    class="w-full flex justify-center py-2 px-3 border border-transparent
+                                         rounded-md shadow-sm text-sm font-medium text-slate-50 bg-slate-900
+                                         hover:bg-slate-800 outline-none focus:ring-2 focus:ring-offset-2
+                                         focus:ring-slate-500 transition-all duration-200"
+                                >
+                                    Proceed to checkout
+                                </button>
+                            </form>
+                            <a
+                                href="{{ path('app_product') }}"
+                                class="w-full flex justify-center py-2 px-3 bg-slate-100 border border-slate-300
+                                 rounded-md text-sm font-medium text-slate-950 hover:bg-slate-300
+                                 outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500
+                                 transition-all duration-200"
+                            >
+                                Continue shopping
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

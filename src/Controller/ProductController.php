@@ -45,7 +45,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/product/{id}', name: 'app_product_show')]
-    public function show(Product $product = null, EntityManagerInterface $em, Request $request): Response
+    public function show(EntityManagerInterface $em, Request $request, Product $product = null): Response
     {
         if($product == null){
             $this->addFlash('error', 'Product not found');
