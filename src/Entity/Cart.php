@@ -18,7 +18,7 @@ class Cart
 
     #[ORM\ManyToOne(inversedBy: 'carts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $user_id = null;
+    private ?User $user_id = null;
 
     /**
      * @var Collection<int, CartContent>
@@ -137,4 +137,5 @@ class Cart
 
         return $this;
     }
+
 }
