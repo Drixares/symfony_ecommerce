@@ -16,252 +16,143 @@ class CartController extends AbstractController
 {
     // Cart page with the products in the cart
     #[Route('/cart', name: 'app_cart')]
-    public function index(EntityManagerInterface $em, TranslatorInterface $translator): Response
+    public function viewCart(EntityManagerInterface $em, TranslatorInterface $translator): Response
     {
-        $user = $this->getUser();
+        // Get the current user
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
 
-        if (!$user) {
+        // If the user is not authenticated redirect to the login page
+        if (!$currentUser) {
             throw $this->createNotFoundException('User not found');
         }
 
-        $cart = $em->getRepository(Cart::class)->findOneBy(
-            ['user_id' => $user->getId(), 'is_paid' => false]
+        // Get the current cart of the user, if it's not exist, create and persist a new one
+        /** @var Cart|null $currentCart */
+        $currentCart = $em->getRepository(Cart::class)->findOneBy(
+            ['user_id' => $currentUser->getId(), 'is_paid' => false]
         );
-
-        if (!$cart) {
-            $cart = new Cart();
-            $cart->setUserId($user);
-            $cart->setPaid(false);
-            $em->persist($cart);
+        if (!$currentCart) {
+            $currentCart = new Cart();
+            $currentCart->setUserId($currentUser);
+            $currentCart->setPaid(false);
+            $em->persist($currentCart);
             $em->flush();
         }
 
         return $this->render('cart/index.html.twig', [
-            'cart' => $cart,
-            'items' => $cart->getCartContents(),
+            'cart' => $currentCart,
+            'items' => $currentCart->getCartContents(), // Get all items associated to the current cart
         ]);
     }
 
+    // This method is very similar to the one above
     #[Route('/cart/content', name: 'app_cart_content')]
-    public function content(EntityManagerInterface $em): Response
+    public function viewCartContent(EntityManagerInterface $em): Response
     {
-        $user = $this->getUser();
-
-        if (!$user) {
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+        if (!$currentUser) {
             throw $this->createNotFoundException('User not found');
         }
 
-        $cart = $em->getRepository(Cart::class)->findOneBy(
-            ['user_id' => $user->getId(), 'is_paid' => false]
+        /** @var Cart|null $currentCart */
+        $currentCart = $em->getRepository(Cart::class)->findOneBy(
+            ['user_id' => $currentUser->getId(), 'is_paid' => false]
         );
-
-        if (!$cart) {
-            $cart = new Cart();
-            $cart->setUserId($user);
-            $cart->setPaid(false);
-            $em->persist($cart);
+        if (!$currentCart) {
+            $currentCart = new Cart();
+            $currentCart->setUserId($currentUser);
+            $currentCart->setPaid(false);
+            $em->persist($currentCart);
             $em->flush();
         }
-
         return $this->render('cart_content/index.html.twig', [
-            'cart' => $cart,
-            'items' => $cart->getCartContents(),
+            'cart' => $currentCart,
+            'items' => $currentCart->getCartContents(),
         ]);
     }
 
     // Add a product to the cart
     #[Route('/cart/add/{id}', name: 'app_cart_add')]
-    public function add(Product $product, EntityManagerInterface $em, TranslatorInterface $translator): Response
+    public function addProductToCart(Product $productToAdd, EntityManagerInterface $em, TranslatorInterface $translator): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if (!$user) {
+        // Get the current user
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+        if (!$currentUser) {
             throw $this->createNotFoundException('User not found');
         }
 
-        // Get the cart of the current user
-        $cart = $em->getRepository(Cart::class)->findOneBy(
-            ['user_id' => $user->getId(), 'is_paid' => false]
+        // Get the current cart of the user, if it's not exist, create and persist a new one
+        /** @var Cart|null $currentCart */
+        $currentCart = $em->getRepository(Cart::class)->findOneBy(
+            ['user_id' => $currentUser->getId(), 'is_paid' => false]
         );
 
-        if (!$cart) {
-            $cart = new Cart();
-            $cart->setUserId($user);
-            $cart->setPaid(false);
-            $em->persist($cart);
+        if (!$currentCart) {
+            $currentCart = new Cart();
+            $currentCart->setUserId($currentUser);
+            $currentCart->setPaid(false);
+            $em->persist($currentCart);
             $em->flush();
         }
 
         // Check if the product already exists in the cart
-        $cartContent = $em->getRepository(CartContent::class)->findOneBy([
-            'cart' => $cart,
-            'product' => $product
+        /** @var CartContent|null $existingCartContent */
+        $existingCartContent = $em->getRepository(CartContent::class)->findOneBy([
+            'cart' => $currentCart,
+            'product' => $productToAdd
         ]);
 
-        if ($cartContent) {
-            // If the product exists in the cart, increase the quantity
-            $cartContent->setQuantity($cartContent->getQuantity() + 1);
+        // If the product exists in the cart, increase the quantity
+        if ($existingCartContent) {
+            $existingCartContent->setQuantity($existingCartContent->getQuantity() + 1);
         } else {
-            // If the product does not exist in the cart, create a new CartContent entry
-            $cartContent = new CartContent();
-            $cartContent->setCart($cart);
-            $cartContent->setProduct($product);
-            $cartContent->setQuantity(1);
-            $cartContent->setAddedDate(new \DateTime());
-            $em->persist($cartContent);
+            // If the product does not exist in the cart, create a new CartContent and persist it
+            $newCartContent = new CartContent();
+            $newCartContent->setCart($currentCart);
+            $newCartContent->setProduct($productToAdd);
+            $newCartContent->setQuantity(1);
+            $newCartContent->setAddedDate(new \DateTime());
+            $em->persist($newCartContent);
         }
 
         $em->flush();
 
         $this->addFlash('success', $translator->trans('toast.cart.productAdded'));
-
         return $this->redirectToRoute('app_cart');
     }
 
-    // Remove a product from the cart
+    // This and the two methods below are similar, they all modify the cart
     #[Route('/cart/remove/{cartContentId}', name: 'app_cart_remove')]
-    public function remove(
-        EntityManagerInterface $em,
-        TranslatorInterface $translator,
-        int $cartContentId
-    ): Response
+    public function removeProductFromCart(EntityManagerInterface $em, TranslatorInterface $translator, int $cartContentId): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        if (!$user) {
+        // All same steps from addProductToCart method
+
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+        if (!$currentUser) {
             throw $this->createNotFoundException('User not found');
         }
 
-        $cartContent = $em->getRepository(CartContent::class)->find($cartContentId);
+        /** @var CartContent|null $cartContentToRemove */
+        $cartContentToRemove = $em->getRepository(CartContent::class)->find($cartContentId);
 
-        if (!$cartContent) {
+        if (!$cartContentToRemove) {
             throw $this->createNotFoundException('Cart content not found');
         }
 
         // Check if the cart content belongs to the user's cart
-        $cart = $cartContent->getCart();
-        if ($cart->getUserId()->getId() !== $user->getId()) {
+        $currentUserCart = $cartContentToRemove->getCart();
+        if ($currentUserCart->getUserId()->getId() !== $currentUser->getId()) {
             throw $this->createAccessDeniedException('You do not have permission to remove this item');
         }
 
-        $em->remove($cartContent);
+        $em->remove($cartContentToRemove);
         $em->flush();
 
         $this->addFlash('success', $translator->trans('toast.cart.productRemoved'));
-
-        return $this->redirectToRoute('app_cart');
-    }
-
-    // Increase the quantity of a product in the cart
-    #[Route('/cart/increase/{cartContentId}', name: 'app_cart_increase')]
-    public function increase(
-            EntityManagerInterface $em,
-            TranslatorInterface $translator,
-            int $cartContentId
-    ): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        $cartContent = $em->getRepository(CartContent::class)->find($cartContentId);
-
-        if (!$cartContent) {
-            throw $this->createNotFoundException('Cart content not found');
-        }
-
-        $cart = $cartContent->getCart();
-        if ($cart->getUserId()->getId() !== $user->getId()) {
-            throw $this->createAccessDeniedException('You do not have permission to update this item');
-        }
-
-        $cartContent->setQuantity($cartContent->getQuantity() + 1);
-
-        $em->persist($cartContent);
-        $em->flush();
-
-        $this->addFlash('success', $translator->trans('quantity-increased'));
-
-        return $this->redirectToRoute('app_cart');
-    }
-
-    // Decrease the quantity of a product in the cart
-    #[Route('/cart/decrease/{cartContentId}', name: 'app_cart_decrease')]
-    public function decrease(EntityManagerInterface $em, int $cartContentId, TranslatorInterface $translator): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        // Get the cart content
-        $cartContent = $em->getRepository(CartContent::class)->find($cartContentId);
-
-        if (!$cartContent) {
-            throw $this->createNotFoundException('Cart content not found');
-        }
-
-        // Check if the cart content belongs to the user's cart
-        $cart = $cartContent->getCart();
-        if ($cart->getUserId()->getId() !== $user->getId()) {
-            throw $this->createAccessDeniedException('You do not have permission to update this item');
-        }
-
-        $cartContent->setQuantity(max(1, $cartContent->getQuantity() - 1)); // Ensure quantity doesn't go below 1
-
-        $em->persist($cartContent);
-        $em->flush();
-
-        return $this->redirectToRoute('app_cart');
-    }
-
-    // Checkout the cart
-    #[Route('/cart/checkout', name: 'app_cart_checkout')]
-    public function checkout(EntityManagerInterface $em, TranslatorInterface $translator): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }
-
-        // Get the cart of the current user
-        $cart = $em->getRepository(Cart::class)->findOneBy(
-            ['user_id' => $user->getId(), 'is_paid' => false]
-        );
-
-        if (!$cart) {
-            throw $this->createNotFoundException('Cart not found');
-        }
-
-        // Check if there is enough stock for each product in the cart
-        foreach ($cart->getCartContents() as $cartContent) {
-            $product = $cartContent->getProduct();
-            if ($product->getStock() < $cartContent->getQuantity()) {
-                $this->addFlash('error', $translator->trans('not-enough-stock') . $product->getTitle());
-                return $this->redirectToRoute('app_cart');
-            }
-        }
-
-        // Deduct the stock for each product in the cart
-        foreach ($cart->getCartContents() as $cartContent) {
-            $product = $cartContent->getProduct();
-            $product->setStock($product->getStock() - $cartContent->getQuantity());
-            $em->persist($product);
-        }
-
-        $cart->setPaid(true);
-        $cart->setAmountPaid($cart->getTotal());
-        $cart->setPurchaseDate(new \DateTime());
-        $em->persist($cart);
-        $em->flush();
-
-        $this->addFlash('success', $translator->trans('toast.cart.purchased'));
-
         return $this->redirectToRoute('app_cart');
     }
 }
