@@ -1,6 +1,14 @@
-{% set cart = carts|filter(cart => not cart.isPaid)|reverse[0] %}
+{% set cart = carts|filter(cart => not cart.isPaid)|reverse?[0] %}
+{% dump(cart) %}
 
 <div class="space-y-6 flex-1 p-7 rounded-lg bg-white">
+    {% if cart is empty or cart is not defined %}
+        <div class="flex items-center justify-center h-96">
+            <p class="text-slate-500">
+                No active cart found.
+            </p>
+        </div>
+    {% else %}
     <div class="flex items-center justify-between">
         <div class="space-y-1">
             <h2 class="text-3xl font-semibold text-slate-600">
@@ -61,4 +69,5 @@
                     </div>
                 </div>
         </div>
+    {% endif %}
 </div>
