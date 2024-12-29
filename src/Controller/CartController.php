@@ -16,7 +16,7 @@ class CartController extends AbstractController
 {
     // Cart page with the products in the cart
     #[Route('/cart', name: 'app_cart')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(EntityManagerInterface $em, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
 
@@ -114,7 +114,7 @@ class CartController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash('success', $translator->trans('product-added'));
+        $this->addFlash('success', $translator->trans('toast.cart.productAdded'));
 
         return $this->redirectToRoute('app_cart');
     }
@@ -148,7 +148,7 @@ class CartController extends AbstractController
         $em->remove($cartContent);
         $em->flush();
 
-        $this->addFlash('success', $translator->trans('product-removed'));
+        $this->addFlash('success', $translator->trans('toast.cart.productRemoved'));
 
         return $this->redirectToRoute('app_cart');
     }
@@ -216,8 +216,6 @@ class CartController extends AbstractController
         $em->persist($cartContent);
         $em->flush();
 
-        $this->addFlash('success', $translator->trans('quantity-decreased'));
-
         return $this->redirectToRoute('app_cart');
     }
 
@@ -262,7 +260,7 @@ class CartController extends AbstractController
         $em->persist($cart);
         $em->flush();
 
-        $this->addFlash('success', $translator->trans('order-confirmed'));
+        $this->addFlash('success', $translator->trans('toast.cart.purchased'));
 
         return $this->redirectToRoute('app_cart');
     }

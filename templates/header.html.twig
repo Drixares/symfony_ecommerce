@@ -6,7 +6,7 @@
         <ul class="inline-flex items-center gap-10">
             <li>
                 <a href="{{ path('app_product') }}" class="text-slate-600 hover:text-slate-900 transition-colors">
-                    Our products
+                    {{ "header.link.products"|trans }}
                 </a>
             </li>
             {% if app.user is not null %}
@@ -28,7 +28,7 @@
                         class="inline-flex items-center gap-2 text-slate-600 border border-slate-200 px-4 py-2
                             rounded-lg bg-slate-100 hover:bg-slate-200 hover:text-slate-700 transition-colors"
                     >
-                        My account
+                        {{ "header.link.account"|trans }}
                     </a>
                     <a
                         href="{{path('app_logout')}}"
@@ -36,7 +36,7 @@
                             rounded-lg bg-slate-100 hover:bg-slate-200 hover:text-rose-500 transition-colors"
                     >
                         <span>
-                            Logout
+                            {{ "header.link.logout"|trans }}
                         </span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -55,7 +55,7 @@
                         class="text-slate-50 border border-slate-200 px-4 py-2
                             rounded-lg bg-slate-950 hover:bg-slate-800 transition-colors"
                     >
-                        Login
+                        {{ "header.link.login"|trans }}
                     </a>
                 </li>
             {% endif %}

@@ -1,7 +1,126 @@
-category:
-  list: Categories list
-  added: Category added
+header:
+  welcome: Welcome
+  link:
+    products: Our products
+    account: My account
+    logout: Logout
+    login: Login
 
-Title: Title
-Description: Description
-Submit: Submit
+main:
+  title: Products list
+  subtitle: products found
+  noProduct: No product found
+  action:
+    addAProduct: Add a product
+
+product:
+  free: Free
+  back: Back to list
+  info:
+    inStock: In stock
+    noStock: Ouf of stock
+    quantity: Quantity
+  action:
+    addToCart: Add to cart
+    loginToContinue: Login to continue shopping
+    edit: Edit product
+    delete: Delete product
+
+cart:
+  title: Cart
+  state:
+    paid: Paid
+    inProgress: In progress
+  noProduct:
+    message: You don't have any product in your cart yet.
+    action: Take a look at our products
+  checkoutSummary: Checkout Summary
+  action:
+    cartContent: Content of the cart
+    deleteProduct: Delete
+    pay: Proceed to checkout
+    continue: Continue shopping
+
+cartContent:
+  title: Cart Details
+  back: Back to cart
+  cartSummary: Cart Summary
+  subtotal: Subtotal
+  total: Total
+  date: Creation date
+  action:
+    continue: Continue shopping
+
+account:
+  title: My Account
+  action:
+    admin: Admin Dashboard
+  activeCart:
+    title: Active Cart
+    noCart: No active cart found.
+    action:
+      goToCart: Go to cart
+  shoppingHistory:
+    noCart:
+      message: You don't have paid any cart yet ! Take a look at our list of products !
+      action: Go to products
+    subtitle: Cart
+    table:
+      image: Image
+      product: Product
+      quantity: Quantity
+      unitPrice: Unit Price
+      total: Total
+  personalInformation:
+    title: Personal Information
+    name: Name
+    email: Email
+  form:
+    title: Edit Profile
+    action:
+      edit: Edit Profile
+
+admin:
+  lastUpdated: Last updated
+  cards:
+    users: Users
+    carts: Pending carts
+    totalValue: Total pending carts value
+  tabs:
+    users: Users
+    carts: Carts
+  table:
+    users:
+      id: ID
+      user: User
+      email: Email
+      roles: Roles
+      toggle: Toggle Roles
+    carts:
+      id: ID
+      customer: Customer
+      details: Details
+      total: Total
+      cart:
+        product: Product
+        unitPrice: Unit Price
+        quantity: Quantity
+        subtotal: Subtotal
+
+toast:
+  permissionDenied: You don't have permission to edit this product.
+  product:
+    imageUploadError: Error while uploading the image.
+    notFound: Product not found.
+    added: Product added successfully!
+    deleted: Product deleted successfully!
+    updated: Product updated successfully!
+  account:
+    loginRequired: You need to be connected.
+    updated: Your account has been updated.
+  cart:
+    productAdded: Product added to the cart.
+    productRemoved: Product removed from the cart.
+    purchased: Your order a been successfully confirmed ! Thanks for your support !
+  user:
+    notFound: User not found.

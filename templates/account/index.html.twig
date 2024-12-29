@@ -5,14 +5,16 @@
 {% block body %}
     <div class="max-w-screen-2xl mx-auto px-5 pt-16 space-y-12">
         <div class="w-full flex items-center justify-between">
-            <h1 class="text-5xl font-semibold text-slate-900">My Account</h1>
+            <h1 class="text-5xl font-semibold text-slate-900">
+                {{ 'account.title'|trans }}
+            </h1>
             {% if is_granted('ROLE_SUPER_ADMIN') %}
             <a
                 href="{{ path('app_admin_index') }}"
                 class="border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-700 text-slate-900
                    transition-colors duration-200 px-3 py-2 rounded-md"
             >
-                Admin Dashboard
+                {{ 'account.action.admin'|trans }}
             </a>
             {% endif %}
         </div>
@@ -21,15 +23,19 @@
         <div class="flex justify-between gap-6">
             <div class="space-y-6 p-7 rounded-lg bg-white shrink-0">
                 <h2 class="text-3xl font-semibold text-slate-700">
-                    Personal information
+                    {{ 'account.personalInformation.title'|trans }}
                 </h2>
                 <div class="space-y-4">
                     <div>
-                        <label class="text-sm text-slate-600">Name</label>
+                        <label class="text-sm text-slate-600">
+                            {{ 'account.personalInformation.name'|trans }}
+                        </label>
                         <p class="text-slate-900 text-lg">{{ app.user.firstName }} {{ app.user.lastName }}</p>
                     </div>
                     <div>
-                        <label class="text-sm text-slate-600">Email</label>
+                        <label class="text-sm text-slate-600">
+                            {{ 'account.personalInformation.email'|trans }}
+                        </label>
                         <p class="text-slate-900 text-lg">{{ app.user.email }}</p>
                     </div>
                 </div>

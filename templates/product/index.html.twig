@@ -7,10 +7,10 @@
 		<div class="w-full flex justify-between gap-y-4 gap-x-2 flex-wrap">
 			<div>
 				<h1 class="text-3xl font-semibold mb-2">
-					Liste des produits
+					{{ 'main.title'|trans }}
 				</h1>
 				<p class="text-slate-600">
-					{{ products|length }}{{ products|length > 1 ? " produits trouvés" : " produit trouvé" }}
+					{{ products|length }} {{ 'main.subtitle'|trans }}
 				</p>
 			</div>
 			{% if is_granted("ROLE_ADMIN") or is_granted('ROLE_SUPER_ADMIN') %}
@@ -44,15 +44,20 @@
 							class="px-3 py-1 rounded-full text-sm
 							{{ p.stock > 0 ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800" }}
 						">
-							{{ p.stock > 0 ? 'In stock : '~ p.stock   : 'No more' }}
+							{{ p.stock > 0
+							? 'product.info.inStock'|trans ~ ' : ' ~ p.stock
+							: 'product.info.noStock'|trans
+							}}
 						</span>
 						<span class="text-lg ">
-							{{ p.price > 0 ? p.price ~ '€' : 'Free' }}
+							{{ p.price > 0 ? p.price ~ '€' : 'product.free'|trans }}
 						</span>
 					</div>
 				</a>
 			{% else %}
-				<p>Aucun produit</p>
+				<p>
+					{{ 'main.noProduct'|trans }}
+				</p>
 			{% endfor %}
 		</div>
 

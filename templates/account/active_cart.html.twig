@@ -1,21 +1,18 @@
-{% set cart = carts|filter(cart => not cart.isPaid)|reverse?[0] %}
-{% dump(cart) %}
-
 <div class="space-y-6 flex-1 p-7 rounded-lg bg-white">
-    {% if cart is empty or cart is not defined %}
+    {% if active_cart is empty or active_cart is not defined %}
         <div class="flex items-center justify-center h-96">
             <p class="text-slate-500">
-                No active cart found.
+                {{ 'account.activeCart.noCart'|trans }}
             </p>
         </div>
     {% else %}
     <div class="flex items-center justify-between">
         <div class="space-y-1">
             <h2 class="text-3xl font-semibold text-slate-600">
-                Active Cart - #{{ cart.id }}
+                {{ 'account.activeCart.title'|trans }} - #{{ active_cart.id }}
             </h2>
             <p class="text-slate-500">
-                {{ cart.getPurchaseDate()|date('d/m/Y') }}
+                {{ active_cart.getPurchaseDate()|date('d/m/Y') }}
             </p>
         </div>
         <a
@@ -23,51 +20,53 @@
             class="ml-3 text-sm font-medium text-slate-50 bg-slate-950 hover:bg-slate-800 transition-colors
              duration-200 rounded-md py-2 px-3"
         >
-            Go to cart
+            {{ 'account.activeCart.action.goToCart'|trans }}
         </a>
 
     </div>
         <div class="flex flex-col gap-4">
-                <div>
-                    <div class="divide-y divide-slate-200">
-                        {% for item in cart.getCartContents() %}
-                            <div class="py-4 flex items-center space-x-4">
-                                <div class="w-16 h-16 flex-shrink-0 bg-slate-100 rounded-lg">
-                                    {% if item.product.image %}
-                                        <img src="{{ asset('uploads/' ~ item.product.image) }}"
-                                             alt="{{ item.product.title }}"
-                                             class="w-full h-full object-cover rounded-lg">
-                                    {% else %}
-                                        <div class="w-full h-full flex items-center justify-center text-slate-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                                 viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                      stroke-width="1"
-                                                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                            </svg>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="text-sm font-medium text-slate-900">{{ item.product.title }}</h4>
-                                    <p class="text-sm text-slate-600">{{ item.quantity }}
-                                        x {{ item.product.price|number_format(2, ',', ' ') }} €</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm font-medium text-slate-900">{{ (item.quantity * item.product.price)|number_format(2, ',', ' ') }}
-                                        €</p>
-                                </div>
+            <div>
+                <div class="divide-y divide-slate-200">
+                    {% for item in active_cart.getCartContents() %}
+                        <div class="py-4 flex items-center space-x-4">
+                            <div class="w-16 h-16 flex-shrink-0 bg-slate-100 rounded-lg">
+                                {% if item.product.image %}
+                                    <img src="{{ asset('uploads/' ~ item.product.image) }}"
+                                         alt="{{ item.product.title }}"
+                                         class="w-full h-full object-cover rounded-lg">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="1"
+                                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
                             </div>
-                        {% endfor %}
-                    </div>
-
-                    <div class="mt-4 pt-4 border-t border-slate-200">
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-600">Total</span>
-                            <span class="text-lg font-medium text-slate-900">{{ cart.getTotal()|number_format(2, ',', ' ') }} €</span>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-slate-900">{{ item.product.title }}</h4>
+                                <p class="text-sm text-slate-600">{{ item.quantity }}
+                                    x {{ item.product.price|number_format(2, ',', ' ') }} €</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-slate-900">{{ (item.quantity * item.product.price)|number_format(2, ',', ' ') }}
+                                    €</p>
+                            </div>
                         </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-200">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-600">
+                            {{ 'cartContent.total'|trans }}
+                        </span>
+                        <span class="text-lg font-medium text-slate-900">{{ active_cart.getTotal()|number_format(2, ',', ' ') }} €</span>
                     </div>
                 </div>
+            </div>
         </div>
     {% endif %}
 </div>

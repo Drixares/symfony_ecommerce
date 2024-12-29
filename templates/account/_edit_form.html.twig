@@ -3,7 +3,7 @@
         class="text-slate-600 border border-slate-200 px-4 py-2 rounded-lg
     bg-slate-100 hover:bg-slate-200 transition-colors"
 >
-    Edit profile
+    {{ 'account.form.action.edit'|trans }}
 </button>
 
 <div id="editProfileModal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
@@ -16,7 +16,9 @@
         >
             &times;
         </button>
-        <h2 class="text-xl font-semibold mb-4">Edit profile</h2>
+        <h2 class="text-xl font-semibold mb-4">
+            {{ 'account.form.title'|trans }}
+        </h2>
 
         <!-- Render the Symfony Form -->
         {{ form_start(edit_form, { 'attr': { 'id': 'editProfileForm', 'class': 'space-y-4' } }) }}

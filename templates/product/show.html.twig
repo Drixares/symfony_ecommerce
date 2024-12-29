@@ -13,7 +13,7 @@
                      class="lucide lucide-chevron-left">
                     <path d="m15 18-6-6 6-6"/>
                 </svg>
-                Go back to list
+                {{ 'product.back'|trans }}
             </a>
             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SUPER_ADMIN') %}
                 <div class="flex items-center gap-2">
@@ -32,13 +32,24 @@
             </div>
             <div class="w-full pt-5">
                 <div class="flex flex-col gap-10">
-                    <div class="w-full flex items-center justify-between gap-3">
-                        <h1 class="text-4xl font-semibold">
-                            {{ product.title }}
-                        </h1>
-                        <p class="text-3xl sm:text-5xl xl:text-6xl font-semibold">
-                            {{ product.price > 0 ? product.price ~ "€" : "Free" }}
-                        </p>
+                    <div class="space-y-2">
+                        <span
+                            class="inline-flex px-3 py-1 rounded-full text-sm
+                            {{ product.stock > 0 ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800" }}
+                        ">
+                            {{ product.stock > 0
+                                ? 'product.info.inStock'|trans ~ ' ' ~ product.stock
+                                : 'product.info.noStock'|trans
+                            }}
+                        </span>
+                        <div class="w-full flex items-center justify-between gap-3">
+                            <h1 class="text-4xl font-semibold">
+                                {{ product.title }}
+                            </h1>
+                            <p class="text-3xl sm:text-5xl xl:text-6xl font-semibold">
+                                {{ product.price > 0 ? product.price ~ "€" : "product.free"|trans }}
+                            </p>
+                        </div>
                     </div>
                     <p>
                         {{ product.content }}
@@ -53,9 +64,16 @@
                                     focus:ring-slate-500 transition-all duration-200"
                                 >
                                     <span>
-                                        Add to cart
+                                        {{ 'product.action.addToCart'|trans }}
                                     </span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" class="lucide lucide-shopping-cart"
+                                    >
+                                        <circle cx="8" cy="21" r="1"/>
+                                        <circle cx="19" cy="21" r="1"/>
+                                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                    </svg>
                                 </button>
                             </form>
                         {% else %}
@@ -65,7 +83,7 @@
                             bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2
                             focus:ring-slate-500 transition-all duration-200"
                         >
-                            Login to continue shopping
+                            {{ 'product.action.loginToContinue'|trans }}
                         </a>
                         {% endif %}
                     </div>

@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Form\AccountType;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +27,7 @@ class AccountController extends AbstractController
          */
         $user = $this->getUser(); // Get the current user
         if (!$user) {
-            $this->addFlash('error', $translator->trans('login-required'));
+            $this->addFlash('error', $translator->trans('toast.account.loginRequired'));
             return $this->redirectToRoute('app_login');
         }
 
@@ -36,7 +37,7 @@ class AccountController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($user);
             $em->flush();
-            $this->addFlash('success', 'Your account has been updated.');
+            $this->addFlash('success', $translator->trans('toast.account.updated'));
 
             return $this->redirectToRoute('app_account');
         }
@@ -44,9 +45,14 @@ class AccountController extends AbstractController
         // Get the carts of the current user
         $carts = $user->getCarts();
 
+        $active_carts = $carts->matching(
+            Criteria::create()->where(Criteria::expr()->eq('is_paid', true))
+        );
+
         return $this->render('account/index.html.twig', [
             'user' => $user,
             'carts' => $carts,
+            'active_cart' => $active_carts[0] ?? null,
             'edit_form' => $form,
         ]);
     }

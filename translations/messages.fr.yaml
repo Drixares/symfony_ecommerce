@@ -1,7 +1,126 @@
-category:
-  list: Liste des catégories
-  added: Catégorie ajoutée
+header:
+  welcome: Bienvenue
+  link:
+    products: Nos produits
+    account: Mon compte
+    logout: Se déconnecter
+    login: Me connecter
 
-Title: Titre
-Description: Description
-Submit: Envoyer
+main:
+  title: Liste des produits
+  subtitle: produits trouvés
+  noProduct: Aucun produit trouvé
+  action:
+    addAProduct: Ajouter un produit
+
+product:
+  free: Gratuit
+  back: Retour à la liste
+  info:
+    inStock: En stock
+    noStock: Rupture de stock
+    quantity: Quantité
+  action:
+    addToCart: Ajouter au panier
+    loginToContinue: Connecte toi pour continuer
+    edit: Modifier le produit
+    delete: Supprimer le produit
+
+cart:
+  title: Panier
+  state:
+    paid: Payé
+    inProgress: En cours
+  noProduct:
+    message: Tu n'as aucun produit dans ton panier pour le moment.
+    action: Va voir vos produits
+  checkoutSummary: Résumé de paiement
+  action:
+    cartContent: Contenu du panier
+    deleteProduct: Supprimer
+    pay: Procéder au paiement
+    continue: Continuer le shopping
+
+cartContent:
+  title: Détails du panier
+  back: Retourner au panier
+  cartSummary: Résumé du panier
+  subtotal: Sous-total
+  total: Total
+  date: Date de création
+  action:
+    continue: Continuer le shopping
+
+account:
+  title: Mon compte
+  action:
+    admin: Tableau de board Administrateur
+  activeCart:
+    title: Panier actif
+    noCart: Aucun panier actif trouvé.
+    action:
+      goToCart: Aller au panier
+  shoppingHistory:
+    noCart:
+      message: Tu n'as payé aucun produit pour le moment, va voir notre liste de produits !
+      action: Va voir nos produits
+    subtitle: Panier
+    table:
+      image: Image
+      product: Produit
+      quantity: Quantité
+      unitPrice: Prix unitaire
+      total: Total
+  personalInformation:
+    title: Informations Personnelles
+    name: Nom
+    email: email
+  form:
+    title: Modifier le Profile
+    action:
+      edit: Modifier le Profile
+
+admin:
+  lastUpdated: Dernière modification
+  cards:
+    users: Utilisateurs
+    carts: Paniers en attente
+    totalValue: Valeur total des paniers en attente
+  tabs:
+    users: Utilisateurs
+    carts: Paniers
+  table:
+    users:
+      id: ID
+      user: Utilisateur
+      email: Email
+      roles: Rôles
+      toggle: Ajouter/supprimer les roles
+    carts:
+      id: ID
+      customer: Client
+      details: Détails
+      total: Total
+      cart:
+        product: Produit
+        unitPrice: Prix unitaire
+        quantity: Quantité
+        subtotal: Sous-total
+
+toast:
+  permissionDenied: Vous n'avez pas la permission de modifier ce produit.
+  product:
+    imageUploadError: Erreur lors du chargement de l'image.
+    notFound: Produit introuvable.
+    added: Produit ajouté avec succès !
+    deleted: Produit supprimé avec succès !
+    updated: Produit mis à jour avec succès !
+  account:
+    loginRequired: Vous devez être connecté.
+    updated: Votre compte a été mis à jour.
+  cart:
+    productAdded: Produit ajouté au panier.
+    productRemoved: Produit retiré du panier.
+    purchased: Votre commande a bien été confirmée ! Merci pour votre soutien !
+  user:
+    notFound: Utilisateur introuvable.

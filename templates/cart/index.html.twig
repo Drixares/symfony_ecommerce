@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 flex items-center justify-between w-full {{ items|length == 0 ? "lg:col-span-3" : "" }}">
                 <h1 class="text-3xl font-semibold text-slate-800 mb-8">
-                    Cart
+                    {{ 'cart.title'|trans }}
                 </h1>
                 {% if items|length > 0 %}
                 <a
@@ -15,7 +15,7 @@
                     class="bg-slate-100 border border-slate-200 rounded-md text-sm font-medium text-slate-950
                     hover:bg-slate-200 py-2 px-3"
                 >
-                    Contenu de la commande
+                    {{ 'cart.action.cartContent'|trans }}
                 </a>
                 {% endif %}
             </div>
@@ -29,13 +29,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                 </div>
-                <p class="text-slate-600 mb-4">You don't have any product in your cart yet.</p>
+                <p class="text-slate-600 mb-4">{{ 'cart.noProduct.message'|trans }}</p>
                 <a href="{{ path('app_product') }}"
                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm
                    font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2
                    focus:ring-offset-2 focus:ring-slate-500 transition-all duration-200"
                 >
-                    Take a look at our products
+                    {{ 'cart.noProduct.action'|trans }}
                 </a>
             </div>
         {% else %}
@@ -72,17 +72,17 @@
                                                 {{
                                                     item.product.price > 0
                                                     ? item.product.price|number_format(2, ',', ' ') ~ "€"
-                                                    : "Free"
+                                                    : 'product.free'|trans
                                                 }}
                                             </span>
                                             <span class="w-[1px] h-4 bg-slate-600"></span>
                                             {% if item.product.stock > 0 %}
                                                 <span class="text-emerald-600">
-                                                   In Stock
+                                                   {{ 'product.info.inStock'|trans }}
                                                 </span>
                                             {% else %}
                                                 <span class="text-red-600">
-                                                    Out of Stock
+                                                    {{ 'product.info.noStock'|trans }}
                                                 </span>
                                             {% endif %}
                                         </div>
@@ -91,12 +91,12 @@
                                         {{
                                             item.product.price * item.quantity > 0
                                             ? (item.product.price * item.quantity)|number_format(2, ',', ' ') ~ "€"
-                                            : "Free"
+                                            : 'product.free'|trans
                                         }}
                                     </p>
                                 </div>
                                 <div class="flex justify-between items-center">
-{#                                  {# Quantity #}
+                                    {# Quantity #}
                                     <div class="inline-flex items-center gap-4 rounded-lg border border-slate-300">
                                         <form
                                             method="post"
@@ -148,7 +148,9 @@
                                                 <line x1="10" x2="10" y1="11" y2="17"/>
                                                 <line x1="14" x2="14" y1="11" y2="17"/>
                                             </svg>
-                                            <span>Delete</span>
+                                            <span>
+                                                {{ 'cart.action.deleteProduct'|trans }}
+                                            </span>
                                         </button>
                                     </form>
                                 </div>
@@ -161,7 +163,7 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-xl py-4 px-6 sticky top-4">
                         <h2 class="text-lg font-semibold text-slate-900 mb-4">
-                            Checkout summary ({{ items|length }})
+                            {{ 'cart.checkoutSummary'|trans }} ({{ items|length }})
                         </h2>
 
                         <div class="flex justify-between items-center mb-4">
@@ -180,7 +182,7 @@
                                          hover:bg-slate-800 outline-none focus:ring-2 focus:ring-offset-2
                                          focus:ring-slate-500 transition-all duration-200"
                                 >
-                                    Proceed to checkout
+                                    {{ 'cart.action.pay'|trans }}
                                 </button>
                             </form>
                             <a
@@ -190,7 +192,7 @@
                                  outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500
                                  transition-all duration-200"
                             >
-                                Continue shopping
+                                {{ 'cart.action.continue'|trans }}
                             </a>
                         </div>
                     </div>

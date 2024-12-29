@@ -18,7 +18,6 @@ class SuperAdminController extends AbstractController
     public function index(EntityManagerInterface $em): Response
     {
         $users = $em->getRepository(User::class)->findAll();
-
         $carts = $em->getRepository(Cart::class)->findBy(['is_paid' => false]);
 
         $carts = array_filter($carts, function (Cart $cart) {
@@ -89,7 +88,7 @@ class SuperAdminController extends AbstractController
         $user = $em->getRepository(User::class)->findOneBy(['id' => $userId,]);
 
         if (!$user) {
-            $this->addFlash('error', $translator->trans('user-not-found'));
+            $this->addFlash('error', $translator->trans('toast.user.notFound'));
             return $this->redirectToRoute('app_admin_index');
         }
 
