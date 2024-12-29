@@ -1,6 +1,11 @@
-# Cours Symfony
+# Rendu Symfony - Ecommerce
 
 [Lien du cours](https://docs.yoanncoualan.com/symfony)
+
+Nom : Mattéo Marchelli
+
+---
+
 
 ## Procédure d'installation
 
