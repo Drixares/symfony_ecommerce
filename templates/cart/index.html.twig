@@ -4,9 +4,21 @@
 
 {% block body %}
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        <h1 class="text-3xl font-semibold text-slate-800 mb-8">
-            Cart
-        </h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 flex items-center justify-between w-full">
+                <h1 class="text-3xl font-semibold text-slate-800 mb-8">
+                    Cart
+                </h1>
+                <a
+                    href="{{ path('app_cart_content') }}"
+                    class="bg-slate-100 border border-slate-200 rounded-md text-sm font-medium text-slate-950
+                    hover:bg-slate-200 py-2 px-3"
+                >
+                    Contenu de la commande
+                </a>
+            </div>
+
+        </div>
 
         {% if cart.getCartContents()|length == 0 %}
             <div class="bg-white rounded-xl shadow-sm p-8 text-center">

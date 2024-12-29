@@ -41,6 +41,33 @@ class CartController extends AbstractController
         ]);
     }
 
+    #[Route('/cart/content', name: 'app_cart_content')]
+    public function content(EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        $cart = $em->getRepository(Cart::class)->findOneBy(
+            ['user_id' => $user->getId(), 'is_paid' => false]
+        );
+
+        if (!$cart) {
+            $cart = new Cart();
+            $cart->setUserId($user);
+            $cart->setPaid(false);
+            $em->persist($cart);
+            $em->flush();
+        }
+
+        return $this->render('cart_content/index.html.twig', [
+            'cart' => $cart,
+            'items' => $cart->getCartContents(),
+        ]);
+    }
+
     // Add a product to the cart
     #[Route('/cart/add/{id}', name: 'app_cart_add')]
     public function add(Product $product, EntityManagerInterface $em, TranslatorInterface $translator): Response
